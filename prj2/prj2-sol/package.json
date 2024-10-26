@@ -14,9 +14,9 @@
     "@types/chai": "^5.0.0",
     "@types/mocha": "^10.0.9",
     "@types/mongodb": "^4.0.6",
-    "@types/node": "^22.7.8",
+    "@types/node": "^22.8.0",
     "@types/semver": "^7.5.8",
-    "chai": "^5.1.1",
+    "chai": "^5.1.2",
     "mocha": "^10.7.3",
     "shx": "^0.3.4",
     "typescript": "^5.6.3"

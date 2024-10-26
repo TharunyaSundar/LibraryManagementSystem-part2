@@ -144,7 +144,6 @@ export class LendingLibrary {
   async findBooks(
     req: Record<string, any>
   ): Promise<Errors.Result<Lib.XBook[]>> {
-    // Step 1: Validate the input request using zod validation.
     const validationResult = Lib.Find.safeParse(req);
     if (!validationResult.success) {
       return zodToResult(validationResult, {
@@ -155,12 +154,11 @@ export class LendingLibrary {
 
     const { search, index = 0, count = DEFAULT_COUNT } = validationResult.data;
 
-    // Step 2: Extract words from the search string (at least 2 characters long).
     const searchWords = search.match(/\w{2,}/g);
     if (!searchWords || searchWords.length === 0) {
       return Errors.errResult("No valid words in search", "BAD_REQ");
     }
-    // Step 3: Create an array of `$or` conditions for each word.
+
     const searchConditions = searchWords.map((word) => ({
       $or: [
         { title: { $regex: new RegExp(word, "i") } },
@@ -169,20 +167,18 @@ export class LendingLibrary {
     }));
 
     try {
-      // Step 4: Query the database.
       const books = await this.booksCollection
-        .find({
-          $and: searchConditions, // Ensures all words appear in title or authors
-        })
-        .sort({ title: 1 }) // Step 5: Sort by title in ascending order.
-        .skip(index) // Step 6: Apply pagination (index and count).
+        .find({ $and: searchConditions })
+        .sort({ title: 1 })
+        .skip(index)
         .limit(count)
         .toArray();
 
-      // Step 7: Return the found books or an empty array if none.
-      return Errors.okResult(books as Lib.XBook[]);
+      // Remove `_id` field from the results
+      const sanitizedBooks = books.map(({ _id, ...rest }) => rest);
+
+      return Errors.okResult(sanitizedBooks as Lib.XBook[]);
     } catch (error) {
-      // Handle database errors.
       return Errors.errResult(
         `Failed to retrieve books: ${error.message}`,
         "DB"

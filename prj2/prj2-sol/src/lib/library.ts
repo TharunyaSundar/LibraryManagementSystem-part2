@@ -13,6 +13,8 @@ const MSGS = {
   "msg.nonEmpty": "must be non-empty",
   "msg.oneOrMoreAuthors": "must have one or more authors",
   "msg.publishYear": `must be a past year on or after ${GUTENBERG_YEAR}`,
+  "msg.pageMustBeNumber": "pages must be a number",
+  "msg.positiveInteger": "must be a positive integer",
 };
 
 // use zod to force Book to have the following fields:
@@ -27,16 +29,14 @@ export const Book = z.object({
   isbn: z.string().regex(/^\d{3}-\d{3}-\d{3}-\d$/, MSGS["msg.isbn"]),
   title: z.string().min(1, MSGS["msg.nonEmpty"]),
   authors: z
-    .string()
-    .min(1, MSGS["msg.nonEmpty"])
-    .array()
+    .array(z.string().min(1, MSGS["msg.nonEmpty"]))
     .min(1, MSGS["msg.oneOrMoreAuthors"]),
-  pages: z.number().int().positive("Pages must be a positive integer"),
+  pages: z.number().int().positive({ message: MSGS["msg.pageMustBeNumber"] }),
   year: z
     .number()
-    .int()
-    .min(GUTENBERG_YEAR, `Year must be on or after ${GUTENBERG_YEAR}`)
-    .max(NOW_YEAR, `Year must be on or before ${NOW_YEAR}`),
+    .int({ message: "year must be a number" })
+    .min(GUTENBERG_YEAR, MSGS["msg.publishYear"])
+    .max(NOW_YEAR, MSGS["msg.publishYear"]),
   publisher: z.string().min(1, MSGS["msg.nonEmpty"]),
   nCopies: z.number().int().positive().optional(),
 });

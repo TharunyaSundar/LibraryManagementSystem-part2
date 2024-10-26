@@ -39,7 +39,8 @@ describe("library types", () => {
       const result = Lib.validate("addBook", req);
       assert(result.isOk === false);
       expect(result.errors.length).to.be.gt(0);
-      expect(result.errors).to.include.members(["authors is required"]);
+      const errorMessages = result.errors.map((error) => error.message);
+      expect(errorMessages).to.include("authors is required");
     });
 
     it("an empty author is invalid", () => {
@@ -56,14 +57,18 @@ describe("library types", () => {
       const result = Lib.validate("addBook", req);
       assert(result.isOk === false);
       expect(result.errors.length).to.be.gt(0);
-      expect(result.errors).to.include.members(["pages must be a number"]);
+      expect(result.errors.map((err) => err.message)).to.include.members([
+        "pages must have type number",
+      ]);
 
-      req.pages = 250; // Reset pages to valid
+      //req.pages = 250; // Reset pages to valid
       req.year = "not a number"; // Invalid type for year
       const resultYear = Lib.validate("addBook", req);
       assert(resultYear.isOk === false);
       expect(resultYear.errors.length).to.be.gt(0);
-      expect(resultYear.errors).to.include.members(["year must be a number"]);
+      expect(resultYear.errors.map((err) => err.message)).to.include.members([
+        "year must have type number",
+      ]);
     });
 
     it("empty string fields makes a good book invalid", () => {
