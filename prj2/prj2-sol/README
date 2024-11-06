@@ -1,10 +1,7 @@
-Team Members: Tharunya Sundar
-Abudul Mannan Kitab
+Done by
+Tharunya Sundar
 Prakash Maheshwaran
-B-Number: B01045418
-B01098864
-B01100261
-Email: tsundar@binghamton.edu
-pmaheshwara@binghamton.edu
+Developed a TypeScript-based lending library system with MongoDB for persistent storage and CRUD operations, managing book data from JSON
+Integrated Zod for validation to ensure type-safe data handling and implemented commands like add Book, find books, and check out book for command-line interactions
+Wrote unit tests with Mocha and Chai, utilizing an in-memory MongoDB instance for efficient, isolated testing
 
-Add text here as needed to document the status of your project.
